@@ -6,7 +6,8 @@ mcVersions = ["1.6.4", "1.7.2", "1.7.10", "1.8"]
 
 
 # Stuff bellow is to make all web requests cached.
-# Most of it is "stolen" from NotEnoughMods_Tools.py and NotEnoughMods_Polling.py
+# Most of it is "stolen" from the NotEnoughMods_Tools.py
+# and NotEnoughMods_Polling.py files in the NotEnoughMods repo
 import traceback
 import gzip
 import os
