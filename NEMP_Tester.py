@@ -1,22 +1,19 @@
 # mods is the list of mods you want to test
-# mcVersions is the NEM list you want to test the mods on
-
-mods = ["MinecraftForge", "ChickenChunks", "EnderStorage"]
-mcVersions = ["1.6.4", "1.7.2", "1.7.10", "1.8"]
+mods = ["RedstoneArsenal", "EquivalentExchange3"]
 
 
 # Stuff bellow is to make all web requests cached.
 # Most of it is "stolen" from the NotEnoughMods_Tools.py
 # and NotEnoughMods_Polling.py files in the NotEnoughMods repo
 import traceback
-import gzip
+import codecs
 import os
-from StringIO import StringIO
+import json
 from string import ascii_letters, digits
 from commands.NEMP import NEMP_Class
 
 
-def cached_fetch_page(self, url, decompress=True, timeout=10):
+def cached_fetch_page(self, url, timeout=10, decode_json=False):
     self.cacheDir = os.path.join("nemcache")
     try:
         fname = normalize_filename(url)
@@ -24,23 +21,23 @@ def cached_fetch_page(self, url, decompress=True, timeout=10):
 
         if os.path.exists(filepath):
             print "Loading from cache,",filepath
-            with open(filepath, "r") as f:
-                return f.read()
+            with codecs.open(filepath, encoding='utf-8', mode='r') as f:
+                if decode_json:
+                    return json.loads(f.read())
+                else:
+                    return f.read()
 
-        response = self.useragent.open(url, timeout=timeout)
-        if response.info().get('Content-Encoding') == 'gzip' and decompress:
-            buf = StringIO(response.read())
-            f = gzip.GzipFile(fileobj=buf, mode='rb')
-            data = f.read()
-        else:
-            data = response.read()
-
+        request = self.requests_session.get(url, timeout=timeout)
 
         print "Writing to cache,",filepath
-        with open(filepath, "w") as f:
-            f.write(data)
+        with codecs.open(filepath, encoding='utf-8', mode='w') as f:
+            if decode_json:
+                f.write(request.text)
+                return request.json()
+            else:
+                f.write(request.text)
+                return request.text
 
-        return data
     except:
         traceback.print_exc()
         pass
