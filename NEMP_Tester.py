@@ -1,5 +1,6 @@
-# mods is the list of mods you want to test
-mods = ["RedstoneArsenal", "EquivalentExchange3"]
+# Config options
+mods = ["ChickenChunks", "EnderTech-Drayshak", "Veinminer", "WarpBook"]  # A list of mods to test
+caching = True  # Setting this to True rewrites the fetch_page function of NEMP_Class to cache web requests
 
 
 # Stuff bellow is to make all web requests cached.
@@ -48,7 +49,8 @@ def normalize_filename(name):
     return ''.join(c for c in name if c in "-_.() %s%s" % (ascii_letters, digits))
 
 
-NEMP_Class.NotEnoughClasses.fetch_page = cached_fetch_page
+if caching:
+    NEMP_Class.NotEnoughClasses.fetch_page = cached_fetch_page
 
 NEM = NEMP_Class.NotEnoughClasses()
 
