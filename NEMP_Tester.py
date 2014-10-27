@@ -55,18 +55,23 @@ if caching:
 NEM = NEMP_Class.NotEnoughClasses()
 
 for mod in mods:
-    # print getattr(NEM, NEM.mods[mod]["function"])(mod)
     try:
         result = getattr(NEM, NEM.mods[mod]["function"])(mod)
         real_name = NEM.mods[mod].get('name', mod)
-        version = result['mc']
+
+        if 'mc' in result:
+            version = result['mc']
+        else:
+            version = NEM.mods[mod]["mc"]
 
         print "\n" "<--------------------------->"
-        print(mod + ": {}".format(result))
 
         if not result:
-            print("Didn't get a reply from the parser. (got " + repr(result) + ")")
+            print(mod + "Didn't get a reply from the parser. (got " + repr(result) + ")")
+            print "<--------------------------->" "\n"
             break
+
+        print(mod + ": {}".format(result))
 
         if "mc" in result:
             if version != result["mc"]:
